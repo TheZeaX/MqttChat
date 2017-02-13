@@ -11,7 +11,30 @@
     tools:context="net.ddns.thezeax.mqttchat.MainActivity">
 
     <TextView
+        android:id="@+id/displayText"
+        android:layout_width="match_parent"
+        android:layout_height="500px"
+        android:hint="empty atm."
+        android:background="@android:color/darker_gray"
+        android:layout_above="@+id/submitButton"
+        android:layout_alignParentTop="true" />
+
+    <EditText
+        android:id="@+id/inputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write your own text here"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:imeOptions="actionSend"
+        android:layout_toStartOf="@+id/submitButton" />
+
+    <Button
+        android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Send"
+        android:onClick="pubMessage"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
