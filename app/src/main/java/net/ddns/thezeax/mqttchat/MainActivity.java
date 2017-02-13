@@ -23,7 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     Button submitButton;
     TextView displayText;
     EditText inputText;
@@ -131,4 +131,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Please enter something first!", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
