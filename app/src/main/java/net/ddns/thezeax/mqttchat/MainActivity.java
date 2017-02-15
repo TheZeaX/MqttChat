@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity{
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-                    subChannel("dev/test");
-                    subChannel("dev/version/number");
+                    subChannel("mqttchat/chat");
+                    subChannel("mqttchat/version/number");
                     //subChannel("dev/version/notes");
                 }
 
@@ -88,15 +88,15 @@ public class MainActivity extends AppCompatActivity{
                 PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
                 String version = pInfo.versionName;
 
-                if(topic.equals("dev/version/number")) {
+                if(topic.equals("mqttchat/version/number")) {
                     String ver = new String(message.getPayload());
                     if(!version.equals(ver)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage(ver).setTitle("A new Version is available at TheZeaX.ddns.net");
+                        builder.setMessage(ver).setTitle("You are on " + version + ". Get the latest version from TheZeaX.ddns.net");
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
-                } else if(topic.equals("dev/test")) {
+                } else if(topic.equals("mqttchat/chat")) {
 
                     String msg = new String(message.getPayload());
                     displayText.setText(displayText.getText().toString() + "\n" + msg);
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void pubMessage(View view) {
-        String topic = "dev/test";
+        String topic = "mqttchat/chat";
         String message = inputText.getText().toString();
         if(!message.equals("")) {
             try {
