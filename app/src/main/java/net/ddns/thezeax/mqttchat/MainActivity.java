@@ -3,8 +3,10 @@ package net.ddns.thezeax.mqttchat;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
@@ -60,7 +62,9 @@ public class MainActivity extends AppCompatActivity{
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-                    subChannel("dev/test");
+                    subChannel("mqttchat/chat");
+                    subChannel("mqttchat/version/number");
+                    //subChannel("dev/version/notes");
                 }
 
                 @Override
@@ -80,26 +84,36 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                String msg = new String(message.getPayload());
-                displayText.setText(displayText.getText().toString()+"\n"+msg);
 
+                PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                String version = pInfo.versionName;
 
-                /*Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivities(MainActivity.this, 0,intent, PendingIntent.FLAG_ONE_SHOT);*/
+                if(topic.equals("mqttchat/version/number")) {
+                    String ver = new String(message.getPayload());
+                    if(!version.equals(ver)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage(ver).setTitle("You are on " + version + ". Get the latest version from TheZeaX.ddns.net");
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                } else if(topic.equals("mqttchat/chat")) {
 
-                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MainActivity.this);
-                notificationBuilder.setContentTitle("MqttChat");
-                notificationBuilder.setContentText(msg);
-                notificationBuilder.setAutoCancel(true);
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                notificationBuilder.setOnlyAlertOnce(true);
-                notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
-                notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
-                notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
+                    String msg = new String(message.getPayload());
+                    displayText.setText(displayText.getText().toString() + "\n" + msg);
 
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(0, notificationBuilder.build());
+                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MainActivity.this);
+                    notificationBuilder.setContentTitle("MqttChat");
+                    notificationBuilder.setContentText(msg);
+                    notificationBuilder.setAutoCancel(true);
+                    notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                    notificationBuilder.setOnlyAlertOnce(true);
+                    notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+                    notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+                    notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
+
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(0, notificationBuilder.build());
+                }
             }
 
             @Override
@@ -118,7 +132,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void pubMessage(View view) {
-        String topic = "dev/test";
+        String topic = "mqttchat/chat";
         String message = inputText.getText().toString();
         if(!message.equals("")) {
             try {
@@ -131,6 +145,4 @@ public class MainActivity extends AppCompatActivity{
             Toast.makeText(MainActivity.this, "Please enter something first!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }
