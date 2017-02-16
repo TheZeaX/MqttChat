@@ -8,7 +8,9 @@ import android.content.Intent;
 public class AutostartReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent mqttCallbackService = new Intent(context, MqttCallbackService.class);
-        context.startService(mqttCallbackService);
+        if(intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
+            Intent mqttCallbackService = new Intent(context, MqttCallbackService.class);
+            context.startService(mqttCallbackService);
+        }
     }
 }
