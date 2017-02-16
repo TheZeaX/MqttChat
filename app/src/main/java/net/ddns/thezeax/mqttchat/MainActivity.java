@@ -1,40 +1,25 @@
 package net.ddns.thezeax.mqttchat;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.pm.PackageInfo;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     Button submitButton;
     TextView displayText;
     EditText inputText;
 
-    MqttAndroidClient client;
+    BroadcastReceiver receiver;
+
+    /*MqttAndroidClient client;
     MemoryPersistence memPer = new MemoryPersistence();
     static String MQTTBROKER = "tcp://thezeax.ddns.net:1883";
     static String USERNAME = "android";
-    static String PASSWORD = "android";
+    static String PASSWORD = "android";*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +30,23 @@ public class MainActivity extends AppCompatActivity{
         displayText = (TextView) findViewById(R.id.displayText);
         inputText = (EditText) findViewById(R.id.inputText);
 
-        mqttConnect();
+        Intent i = new Intent(MainActivity.this, MqttCallbackService.class);
+        startService(i);
+
+        /*receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String s = intent.getStringExtra("nachricht");
+                displayText.setText(s);
+                // do something here.
+            }
+        };*/
+
+        //mqttConnect();
     }
 
     public void mqttConnect() {
-        String clientId = MqttClient.generateClientId();
+        /*String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(MainActivity.this, MQTTBROKER, clientId, memPer);
         MqttConnectOptions options = new MqttConnectOptions();
         options.setUserName(USERNAME);
@@ -129,9 +126,9 @@ public class MainActivity extends AppCompatActivity{
         }catch(MqttException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    public void pubMessage(View view) {
+    /*public void pubMessage(View view) {
         String topic = "mqttchat/chat";
         String message = inputText.getText().toString();
         if(!message.equals("")) {
@@ -144,5 +141,6 @@ public class MainActivity extends AppCompatActivity{
         } else {
             Toast.makeText(MainActivity.this, "Please enter something first!", Toast.LENGTH_SHORT).show();
         }
+    }*/
     }
 }
